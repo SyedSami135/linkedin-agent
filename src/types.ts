@@ -1,7 +1,20 @@
-export interface AppConfig {
-  readonly feeds: ReadonlyArray<FeedConfig>;
-  readonly schedule: string;
-  readonly postDefaults: PostDefaults;
+export type SourceType = 'rss' | 'github';
+export type PostStyle = 'standard' | 'poll_text' | 'question';
+export type ReviewAction = 'approve' | 'edit' | 'skip';
+
+export interface RepoStats {
+  readonly stars: number;
+  readonly language: string | null;
+  readonly topics: ReadonlyArray<string>;
+  readonly openIssues: number;
+}
+
+export interface GithubConfig {
+  readonly enabled: boolean;
+  readonly query: string;
+  readonly maxReposPerRun: number;
+  readonly label: string;
+  readonly topics: ReadonlyArray<string>;
 }
 
 export interface FeedConfig {
@@ -16,6 +29,19 @@ export interface PostDefaults {
   readonly maxLength: number;
   readonly includeLink: boolean;
   readonly hashtagCount: number;
+  readonly postStyle: PostStyle;
+  readonly styleWeights?: {
+    readonly standard: number;
+    readonly poll_text: number;
+    readonly question: number;
+  };
+}
+
+export interface AppConfig {
+  readonly feeds: ReadonlyArray<FeedConfig>;
+  readonly github?: GithubConfig;
+  readonly schedule: string;
+  readonly postDefaults: PostDefaults;
 }
 
 export interface Article {
@@ -26,6 +52,8 @@ export interface Article {
   readonly publishedAt: string;
   readonly feedLabel: string;
   readonly topics: ReadonlyArray<string>;
+  readonly sourceType: SourceType;
+  readonly repoStats?: RepoStats;
 }
 
 export interface GeneratedPost {
@@ -33,8 +61,6 @@ export interface GeneratedPost {
   readonly content: string;
   readonly generatedAt: string;
 }
-
-export type ReviewAction = 'approve' | 'edit' | 'skip';
 
 export interface ReviewDecision {
   readonly action: ReviewAction;
@@ -60,4 +86,5 @@ export interface Env {
   readonly GROQ_API_KEY: string;
   readonly LINKEDIN_ACCESS_TOKEN: string;
   readonly LINKEDIN_PERSON_URN: string;
+  readonly GITHUB_TOKEN?: string;
 }

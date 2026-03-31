@@ -36,6 +36,7 @@ export async function fetchArticles(feedConfig: FeedConfig): Promise<ReadonlyArr
         publishedAt,
         feedLabel: feedConfig.label,
         topics: feedConfig.topics,
+        sourceType: 'rss' as const,
       };
     })
     .filter((a) => !isStale(a.publishedAt) && a.link.length > 0)

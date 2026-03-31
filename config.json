@@ -13,11 +13,24 @@
       "maxArticlesPerRun": 2
     }
   ],
+  "github": {
+    "enabled": true,
+    "query": "stars:>500 pushed:>2026-01-01",
+    "maxReposPerRun": 3,
+    "label": "GitHub Trending",
+    "topics": ["open-source", "developer-tools", "github"]
+  },
   "schedule": "0 9 * * 1,3,5",
   "postDefaults": {
     "tone": "professional yet conversational",
     "maxLength": 1300,
     "includeLink": true,
-    "hashtagCount": 3
+    "hashtagCount": 3,
+    "postStyle": "standard",
+    "styleWeights": {
+      "standard": 0.5,
+      "poll_text": 0.25,
+      "question": 0.25
+    }
   }
 }

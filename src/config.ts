@@ -9,15 +9,30 @@ const FeedConfigSchema = z.object({
   maxArticlesPerRun: z.number().int().min(1).max(20).default(3),
 });
 
+const GithubConfigSchema = z.object({
+  enabled: z.boolean().default(true),
+  query: z.string().min(1).default('stars:>500+pushed:>2026-01-01'),
+  maxReposPerRun: z.number().int().min(1).max(20).default(3),
+  label: z.string().min(1).default('GitHub Trending'),
+  topics: z.array(z.string()).default(['open-source', 'developer-tools', 'github']),
+});
+
 const PostDefaultsSchema = z.object({
   tone: z.string().min(1).default('professional yet conversational'),
   maxLength: z.number().int().min(100).max(3000).default(1300),
   includeLink: z.boolean().default(true),
   hashtagCount: z.number().int().min(0).max(10).default(3),
+  postStyle: z.enum(['standard', 'poll_text', 'question']).default('standard'),
+  styleWeights: z.object({
+    standard: z.number().min(0),
+    poll_text: z.number().min(0),
+    question: z.number().min(0),
+  }).optional(),
 });
 
 const AppConfigSchema = z.object({
   feeds: z.array(FeedConfigSchema).min(1),
+  github: GithubConfigSchema.optional(),
   schedule: z.string().min(1),
   postDefaults: PostDefaultsSchema,
 });
@@ -61,5 +76,6 @@ export function loadEnv(): Env {
     GROQ_API_KEY: process.env['GROQ_API_KEY']!,
     LINKEDIN_ACCESS_TOKEN: process.env['LINKEDIN_ACCESS_TOKEN']!,
     LINKEDIN_PERSON_URN: process.env['LINKEDIN_PERSON_URN']!,
+    GITHUB_TOKEN: process.env['GITHUB_TOKEN'],
   });
 }

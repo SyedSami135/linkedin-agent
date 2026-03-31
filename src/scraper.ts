@@ -184,5 +184,6 @@ export function feedPostsToArticles(posts: ReadonlyArray<FeedPost>): ReadonlyArr
     publishedAt: post.scrapedAt,
     feedLabel: `LinkedIn feed (${post.authorName})`,
     topics: [],
+    sourceType: 'rss' as const,
   }));
 }

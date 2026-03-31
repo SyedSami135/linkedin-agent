@@ -2,6 +2,7 @@ import 'dotenv/config';
 import cron from 'node-cron';
 import { loadConfig, loadEnv } from './config.js';
 import { fetchAllFeeds, filterNewArticles } from './feeds.js';
+import { fetchGithubRepos } from './github.js';
 import { scrapeLinkedInFeed, feedPostsToArticles } from './scraper.js';
 import { generatePost } from './generator.js';
 import { reviewBatch } from './reviewer.js';
@@ -10,7 +11,9 @@ import { publishToLinkedIn, validateToken } from './publisher.js';
 import { saveEntry } from './history.js';
 import type { GeneratedPost, HistoryEntry, ReviewDecision } from './types.js';
 
-async function runPipeline(source: 'rss' | 'feed', approval: 'cli' | 'email'): Promise<void> {
+type PipelineSource = 'rss' | 'feed' | 'github';
+
+async function runPipeline(source: PipelineSource, approval: 'cli' | 'email'): Promise<void> {
   console.log(`\n[pipeline] Starting run at ${new Date().toISOString()} (source: ${source})`);
 
   const config = await loadConfig();
@@ -32,6 +35,13 @@ async function runPipeline(source: 'rss' | 'feed', approval: 'cli' | 'email'): P
     const posts = await scrapeLinkedInFeed();
     allArticles = feedPostsToArticles(posts);
     console.log(`[pipeline] Scraped ${allArticles.length} post(s) from your LinkedIn feed`);
+  } else if (source === 'github') {
+    if (!config.github?.enabled) {
+      console.error('[pipeline] GitHub source not configured. Add "github" block to config.json.');
+      return;
+    }
+    allArticles = await fetchGithubRepos(config.github, env.GITHUB_TOKEN);
+    console.log(`[pipeline] Fetched ${allArticles.length} repo(s) from GitHub`);
   } else {
     allArticles = await fetchAllFeeds(config.feeds);
     console.log(`[pipeline] Fetched ${allArticles.length} articles from ${config.feeds.length} feed(s)`);
@@ -141,7 +151,11 @@ async function main(): Promise<void> {
   const args = process.argv.slice(2);
   const runNow = args.includes('--now');
   const scheduleOnly = args.includes('--schedule');
-  const source: 'rss' | 'feed' = args.includes('--source=feed') ? 'feed' : 'rss';
+  const source: PipelineSource = args.includes('--source=github')
+    ? 'github'
+    : args.includes('--source=feed')
+    ? 'feed'
+    : 'rss';
   const approval: 'cli' | 'email' = args.includes('--approval=email') ? 'email' : 'cli';
 
   await loadConfig(); // validate config.json on startup
