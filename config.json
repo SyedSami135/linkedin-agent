@@ -1,0 +1,23 @@
+{
+  "feeds": [
+    {
+      "url": "https://hnrss.org/newest?q=AI+machine+learning",
+      "label": "Hacker News - AI",
+      "topics": ["AI", "Machine Learning"],
+      "maxArticlesPerRun": 3
+    },
+    {
+      "url": "https://feeds.feedburner.com/venturebeat/SZYF",
+      "label": "VentureBeat - AI",
+      "topics": ["AI", "Tech", "Startups"],
+      "maxArticlesPerRun": 2
+    }
+  ],
+  "schedule": "0 9 * * 1,3,5",
+  "postDefaults": {
+    "tone": "professional yet conversational",
+    "maxLength": 1300,
+    "includeLink": true,
+    "hashtagCount": 3
+  }
+}

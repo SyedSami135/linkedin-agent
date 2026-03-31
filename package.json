@@ -1,0 +1,36 @@
+{
+  "name": "linkedin-agent",
+  "version": "1.0.0",
+  "description": "LinkedIn posting agent powered by Claude AI",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js",
+    "setup": "tsx src/setup.ts",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^7.0.0",
+    "axios": "^1.7.0",
+    "dotenv": "^16.4.0",
+    "groq-sdk": "^1.1.2",
+    "imapflow": "^1.2.18",
+    "node-cron": "^3.0.3",
+    "nodemailer": "^8.0.4",
+    "playwright": "^1.58.2",
+    "rss-parser": "^3.13.0",
+    "zod": "^3.23.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "@types/node-cron": "^3.0.11",
+    "@types/nodemailer": "^7.0.11",
+    "@vitest/coverage-v8": "^2.0.0",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^2.0.0"
+  }
+}
