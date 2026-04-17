@@ -1,6 +1,7 @@
 import axios from 'axios';
 import { createHash } from 'crypto';
 import type { Article, GithubConfig } from './types.js';
+import { deriveArticleMetadata } from './content-ideas.js';
 
 interface GithubApiRepo {
   readonly id: number;
@@ -35,7 +36,7 @@ function repoToArticle(repo: GithubApiRepo, config: GithubConfig): Article {
   const summary = `${description} ${topicsList}`.trim().slice(0, 500);
   const mergedTopics = [...config.topics, ...repo.topics].slice(0, 8);
 
-  return {
+  const base = {
     id,
     title: repo.full_name,
     link: repo.html_url,
@@ -44,12 +45,18 @@ function repoToArticle(repo: GithubApiRepo, config: GithubConfig): Article {
     feedLabel: config.label,
     topics: mergedTopics,
     sourceType: 'github',
+    topicLane: config.lane,
     repoStats: {
       stars: repo.stargazers_count,
       language: repo.language,
       topics: repo.topics,
       openIssues: repo.open_issues_count,
     },
+  } as const;
+
+  return {
+    ...base,
+    ...deriveArticleMetadata(base),
   };
 }
 

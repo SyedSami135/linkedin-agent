@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "tsx src/index.ts",
+    "engage": "tsx src/engagement-index.ts",
+    "engage:now": "tsx src/engagement-index.ts --now",
     "build": "tsc",
     "start": "node dist/index.js",
     "setup": "tsx src/setup.ts",

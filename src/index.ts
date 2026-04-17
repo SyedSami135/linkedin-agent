@@ -1,7 +1,7 @@
 import 'dotenv/config';
 import cron from 'node-cron';
 import { loadConfig, loadEnv } from './config.js';
-import { fetchAllFeeds, filterNewArticles } from './feeds.js';
+import { balanceArticlesByLane, fetchAllSources, filterNewArticles } from './feeds.js';
 import { fetchGithubRepos } from './github.js';
 import { scrapeLinkedInFeed, feedPostsToArticles } from './scraper.js';
 import { generatePost } from './generator.js';
@@ -43,8 +43,8 @@ async function runPipeline(source: PipelineSource, approval: 'cli' | 'email'): P
     allArticles = await fetchGithubRepos(config.github, env.GITHUB_TOKEN);
     console.log(`[pipeline] Fetched ${allArticles.length} repo(s) from GitHub`);
   } else {
-    allArticles = await fetchAllFeeds(config.feeds);
-    console.log(`[pipeline] Fetched ${allArticles.length} articles from ${config.feeds.length} feed(s)`);
+    allArticles = await fetchAllSources(config.sources);
+    console.log(`[pipeline] Fetched ${allArticles.length} articles from ${config.sources.length} source(s)`);
   }
 
   const newArticles = await filterNewArticles(allArticles);
@@ -55,12 +55,19 @@ async function runPipeline(source: PipelineSource, approval: 'cli' | 'email'): P
     return;
   }
 
+  const selectedArticles = balanceArticlesByLane(newArticles);
+  const frameworkCount = selectedArticles.filter((article) => article.topicLane === 'frameworks').length;
+  const aiCount = selectedArticles.filter((article) => article.topicLane === 'ai_automation').length;
+  console.log(
+    `[pipeline] Selected ${selectedArticles.length} item(s) for generation (${frameworkCount} frameworks, ${aiCount} AI/automation)`
+  );
+
   // Generate posts concurrently (max 5 at a time)
   const CONCURRENCY = 5;
   const posts: GeneratedPost[] = [];
 
-  for (let i = 0; i < newArticles.length; i += CONCURRENCY) {
-    const batch = newArticles.slice(i, i + CONCURRENCY);
+  for (let i = 0; i < selectedArticles.length; i += CONCURRENCY) {
+    const batch = selectedArticles.slice(i, i + CONCURRENCY);
     const results = await Promise.allSettled(
       batch.map((article) => generatePost(article, config.postDefaults, env.GROQ_API_KEY))
     );

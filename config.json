@@ -1,16 +1,84 @@
 {
-  "feeds": [
+  "sources": [
     {
-      "url": "https://hnrss.org/newest?q=AI+machine+learning",
-      "label": "Hacker News - AI",
-      "topics": ["AI", "Machine Learning"],
-      "maxArticlesPerRun": 3
+      "kind": "html",
+      "lane": "frameworks",
+      "url": "https://nextjs.org/blog",
+      "label": "Next.js Blog",
+      "topics": ["nextjs", "react", "full-stack"],
+      "maxArticlesPerRun": 2,
+      "extractor": "article_cards",
+      "frameworkOrVendor": "Next.js"
     },
     {
-      "url": "https://feeds.feedburner.com/venturebeat/SZYF",
-      "label": "VentureBeat - AI",
-      "topics": ["AI", "Tech", "Startups"],
-      "maxArticlesPerRun": 2
+      "kind": "html",
+      "lane": "frameworks",
+      "url": "https://react.dev/blog",
+      "label": "React Blog",
+      "topics": ["react", "frontend", "ui"],
+      "maxArticlesPerRun": 2,
+      "extractor": "article_cards",
+      "frameworkOrVendor": "React"
+    },
+    {
+      "kind": "html",
+      "lane": "frameworks",
+      "url": "https://docs.nestjs.com/migration-guide",
+      "label": "NestJS Migration Guide",
+      "topics": ["nestjs", "typescript", "backend"],
+      "maxArticlesPerRun": 1,
+      "extractor": "single_page",
+      "frameworkOrVendor": "NestJS"
+    },
+    {
+      "kind": "html",
+      "lane": "frameworks",
+      "url": "https://expressjs.com/",
+      "label": "Express Blog",
+      "topics": ["express", "nodejs", "backend"],
+      "maxArticlesPerRun": 1,
+      "extractor": "article_cards",
+      "frameworkOrVendor": "Express"
+    },
+    {
+      "kind": "html",
+      "lane": "frameworks",
+      "url": "https://bun.sh/blog",
+      "label": "Bun Blog",
+      "topics": ["bun", "runtime", "javascript"],
+      "maxArticlesPerRun": 1,
+      "extractor": "article_cards",
+      "frameworkOrVendor": "Bun"
+    },
+    {
+      "kind": "html",
+      "lane": "ai_automation",
+      "url": "https://openai.com/index/",
+      "label": "OpenAI News",
+      "topics": ["ai", "automation", "api"],
+      "maxArticlesPerRun": 2,
+      "extractor": "article_cards",
+      "frameworkOrVendor": "OpenAI"
+    },
+    {
+      "kind": "html",
+      "lane": "ai_automation",
+      "url": "https://www.anthropic.com/news",
+      "label": "Anthropic News",
+      "topics": ["ai", "agents", "automation"],
+      "maxArticlesPerRun": 2,
+      "extractor": "article_cards",
+      "frameworkOrVendor": "Anthropic"
+    },
+    {
+      "kind": "html",
+      "lane": "ai_automation",
+      "url": "https://vercel.com/blog",
+      "label": "Vercel Blog",
+      "topics": ["ai", "sdk", "developer-tools"],
+      "maxArticlesPerRun": 2,
+      "extractor": "article_cards",
+      "frameworkOrVendor": "Vercel"
     }
   ],
   "github": {
@@ -18,19 +86,32 @@
     "query": "stars:>500 pushed:>2026-01-01",
     "maxReposPerRun": 3,
     "label": "GitHub Trending",
-    "topics": ["open-source", "developer-tools", "github"]
+    "topics": ["open-source", "developer-tools", "github"],
+    "lane": "frameworks"
   },
   "schedule": "0 9 * * 1,3,5",
   "postDefaults": {
     "tone": "professional yet conversational",
     "maxLength": 1300,
     "includeLink": true,
-    "hashtagCount": 3,
+    "hashtagCount": 6,
     "postStyle": "standard",
     "styleWeights": {
-      "standard": 0.5,
-      "poll_text": 0.25,
-      "question": 0.25
+      "standard": 0.7,
+      "poll_text": 0.1,
+      "question": 0.2
     }
+  },
+  "engagement": {
+    "enabled": true,
+    "schedule": "30 14 * * 2,4,6",
+    "maxPostsPerRun": 3,
+    "maxCommentsPerRun": 2,
+    "likePosts": true,
+    "commentPosts": true,
+    "minPostLength": 140,
+    "maxPostLength": 2200,
+    "scrollRounds": 6,
+    "headless": true
   }
 }
